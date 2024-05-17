@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MidPrjFuji</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="main-style.css" />
+    <style>
+        /* Don't show the not-yet-loaded templates */
+        [ws-template], [ws-children-template] { display: none; }
+    </style>
+    <script type="text/javascript" src="Content/MidPrjFuji.head.js"></script>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="${Url_Home}">Home page</a></li>
+            <li><a href="${Url_Page1}">Second page</a></li>
+        </ul>
+    </nav>
+    <div class="wrap">
+        <div ws-hole="MainContainer"></div>
+
+        <div ws-children-template="HomePage">
+            <h1>Current Your Financial Status</h1>
+            <h2>Please input your data of the month (forint)</h2>
+            <div style="background-color:#ffffff;padding:20px">
+                <label class="lbl" for="Month">*Month:  </label>
+                <select ws-var="Month" placeholder="month">
+                    <option value="January">January</option>
+                    <option value="Febrary">Febrary</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="Nobember">Nobember</option>
+                    <option value="December">December</option>
+                </select><span class="msg">Please select the month</span><br />
+                <p class="cat">Income</p>
+                <label for="Salary">*Salary:  </label>
+                <input ws-var="Salary" placeholder="salary e.g. 500,000" /><br />
+
+                <p class="cat">Expense</p>
+                <label for="Utility">*Utility:  </label>
+                <input ws-var="Utility" placeholder="utility e.g. 100,000" />
+                <label for="Food">*Food:   </label>
+                <input ws-var="Food" placeholder="food e.g. 100,000" />
+                <div class="i-data">
+                    <table>
+                        <tr>
+                            <th>Month</th>
+                            <th>Salary</th>
+                            <th>Utility</th>
+                            <th>Food</th>
+                            
+                        </tr>
+                        <tr>
+                            <td>${Month} &nbsp;</td>
+                            <td>${Salary}</td>
+                            <td>${Utility}</td>
+                            <td>${Food}</td>
+                            
+                        </tr>
+                    </table>
+                </div>
+                <button ws-onclick="Add">Check my Status</button>
+            </div>
+            <table class="balance-result">
+                <tr>
+                    <th width="20%">Month</th>
+                    <th width="20%">Salary</th>
+                    <th width="20%">Utility</th>
+                    <th width="20%">Food</th>
+                    <th width="20%">Balance</th>
+                </tr>
+            </table>
+
+            <table class="balance-result" ws-hole="ListContainer">
+                <tr ws-template="ListItem">
+                    <td>${Month}</td>
+                    <td>${Salary}</td>
+                    <td>${Utility}</td>
+                    <td>${Food}</td>
+                    <td>${Balance}</td>
+                </tr>
+            </table>
+        </div>
+        <div ws-children-template="Page1">
+
+
+            <h1>Your Stock List</h1>
+
+            <form id="myForm">
+                <label for="company">Conpany:</label><br>
+                <select id="company" name="company" ws-var="Company">
+                    <option value="microsoft">Microsoft</option>
+                    <option value="apple">Apple</option>
+                </select>
+
+                <input type="button" value="検索" onclick="loadData()">
+            </form>
+
+            <p id="demo"></p>
+
+
+
+            <div>
+                <table class="balance-result">
+                    <tr>
+                        <th style="width:50%;">stockname</th>
+                        <th>price: Euro</th>
+                    </tr>
+                </table>
+
+                <table class="balance-result" ws-hole="ListContainer2">
+                    <tr>
+                        <td  style="width:50%;" id="com">&nbsp;</td>
+                        <td id="pr"></td>
+                    </tr>
+                    <tr ws-template="ListItem2">
+                        <td style="width:50%;">${Company}</td>
+                        <td>${Price}</td>
+                    </tr>
+
+
+                </table>
+            </div>
+
+            <script>
+                function loadData() {
+                    // 新しいXMLHttpRequestオブジェクトを作成
+                    var xhttp = new XMLHttpRequest();
+
+                    // フォームから企業名を取得
+                    var company = document.getElementById("company").value;
+
+                    // レスポンスが受信されたときのイベントハンドラを設定
+                    xhttp.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                            // レスポンステキストを取得
+                            var responseText = this.responseText;
+
+                            // レスポンステキストをJSONオブジェクトに変換
+                            var data = JSON.parse(responseText);
+
+                            // JSONオブジェクトから必要な情報を取り出し、HTML要素に設定
+                            var name = data['bestMatches'][1]['2. name'];
+                            var price = data['bestMatches'][1]['9. matchScore'];
+
+                            document.getElementById("demo").innerHTML = "Name: " + name + "<br>Price: " + price;
+                            document.getElementById("com").innerHTML = name;
+                            document.getElementById("pr").innerHTML = price;
+                        }
+                    };
+
+                     HTTPリクエストを設定
+                    xhttp.open("GET", "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + company + "&apikey=RUI3S77Z5W71OJDM", true);
+
+                     HTTPリクエストを送信
+                    xhttp.send();
+                }
+            </script>
+
+
+
+        </div>
+        <div id="Chart1"></div>
+        <div id="main1"></div>
+
+    </div>
+    <script type="text/javascript" src="Content/MidPrjFuji.min.js"></script>
+
+
+</body>
+</html>
