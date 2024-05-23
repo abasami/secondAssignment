@@ -4,6 +4,7 @@
 
 # Second-Assignment: Develop a page that allows users to input their expenses and incomes and see their balance in real time. 
 ## Course: Introduction to functional programming in F\# (University of Dunaújváros, Hungary)
+### EJL8UE FUJIWARA AYA
 
 ### OVERVIEW
 Design an interface with fields for entering income and expenses, categorized by types (e.g., food, utilities, salary).
